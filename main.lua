@@ -65,6 +65,7 @@ local player_y = 5
 local player_x = 5
    
 function love.load(arg)
+    loveframes.util.SetActiveSkin("Pokemon")
     loadOptions()
     loveframes.SetState("loaded")
     --State Loaded
@@ -668,7 +669,7 @@ end
 
 function showSaveMenu()
     saveGame()
-    displayTextBox({"Saved"})
+    displayTextBox({"Saved"}, "paused")
 end
 
 function showPlayerCard(menuFrame)
@@ -833,13 +834,13 @@ function tryEvent(fromX,fromY)
     elseif movementData[fromY][fromX] == 7 then
         print("Cutable Tile")
     elseif fromX == 362 and fromY == 222 then
-        displayTextBox({playerName.."'s House"})
+        displayTextBox({playerName.."'s House"}, "playing")
     elseif fromX == 354 and fromY == 220 then
-        displayTextBox({"Elm Pokémon Lab"})
+        displayTextBox({"Elm Pokémon Lab"}, "playing")
     elseif fromX == 360 and fromY == 230 then
-        displayTextBox({"Elm's House"})
+        displayTextBox({"Elm's House"}, "playing")
     elseif fromX == 359 and fromY == 225 then
-        displayTextBox({"New Bark Town", "The town where the winds of a new beginning blow."})
+        displayTextBox({"New Bark Town", "The town where the winds of a new beginning blow."}, "playing")
 
 
     else
@@ -847,7 +848,7 @@ function tryEvent(fromX,fromY)
     end
 end
 
-function displayTextBox(inputStringArray)
+function displayTextBox(inputStringArray, state)
     showingText = true
     textBoxString = inputStringArray
     currentTextPossition = 1
@@ -856,7 +857,7 @@ function displayTextBox(inputStringArray)
     textFrame:SetName("")
     textFrame:SetPos(0,476)
     textFrame:SetSize(640,100)
-    textFrame:SetState("playing")
+    textFrame:SetState(state)
     textFrame:ShowCloseButton(false)
     textFrame:SetResizable(false)
     textFrame:SetDraggable(false)
