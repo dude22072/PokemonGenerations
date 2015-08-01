@@ -1,0 +1,29 @@
+pokemon = {pokemon, nickname, Level, HP, MAX HP, EXP, 
+Status Condition, HeldItem, PKRS, Ability,
+Move1, Move1PP, Move1PPUP, 
+Move2, Move2PP, Move2PPUP, 
+Move3, Move3PP, Move3PPUP,
+Move4, Move4PP, Move4PPUP,
+OTName, OTID, Language, Frendship, MetLocation, Pokeball, 
+HPIV, AttackIV, DefenseIV, SpeedIV, SpAttackIV, SpDefenseIV, 
+HPEV, AttackEV, DefenseEV, SpeedEV, SpAttackEV, SpDefenseEV, 
+Coolness, Beauty, Cuteness, Smartness, Toughness, Feel, 
+Ribbons}
+
+move={Name, Type, PhysSpec, Contest, PP, Power, Accuracy, Priority, AttackWho}
+(AttackWho - 
+0	Selected target
+1	Depends on the attack
+2	Random target
+3	Both foes
+4	User
+5	Both foes and partner
+6	Opponent field
+)
+
+playerBadges={Boulder, Cascade, Thunder, Rainbow, Soul, Marsh, Volcano, Earth, 
+Zephyr, Hive, Plain, Fog, Storm, Mineral, Glacier, Rising, 
+Stone, Knuckle, Dynamo, Heat, Balance, Feather, Mind, Rain, 
+Coal, Forest, Cobble, Fan, Relic, Mine, Icicle, Beacon, 
+Knowledge, Guts, Tactics, Luck, Spirits, Ability, Brave,
+Coral-Eye, Sea Ruby, Spike Shell, Jade Star,}
