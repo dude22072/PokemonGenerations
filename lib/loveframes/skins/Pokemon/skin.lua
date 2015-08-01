@@ -11,8 +11,9 @@ skin.name = "Pokemon"
 skin.author = "Joseph Keller"
 skin.version = "1.0"
 
-local smallfont = love.graphics.newFont(10)
-local imagebuttonfont = love.graphics.newFont(15)
+local smallfont = love.graphics.newFont("lib/loveframes/skins/Pokemon/Pokemon.ttf", 10)
+local imagebuttonfont = love.graphics.newFont("lib/loveframes/skins/Pokemon/Pokemon.ttf", 15)
+local textfont = love.graphics.newFont("lib/loveframes/skins/Pokemon/Pokemon.ttf", 15)
 local bordercolor = {143, 143, 143, 255}
 
 -- add skin directives to this table
@@ -86,6 +87,9 @@ skin.controls.multichoicerow_text_font              = smallfont
 
 -- tooltip
 skin.controls.tooltip_body_color                    = {255, 255, 255, 255}
+
+--text
+skin.directives.text_default_font                   = textfont
 
 -- textinput
 skin.controls.textinput_body_color                  = {250, 250, 250, 255}
@@ -909,7 +913,7 @@ end
 	- desc: draws the text object
 --]]---------------------------------------------------------
 function skin.DrawText(object)
-	
+    
 end
 
 --[[---------------------------------------------------------

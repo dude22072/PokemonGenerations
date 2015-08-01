@@ -9,6 +9,7 @@ local newGameNextButton = nil
 local buttonBoy = nil
 local buttonGirl = nil
 local isPlayerBoy = nil
+local isPlayerBiking = false
 local playerName = ""
 local textPlayerNameInput = nil
 local playersprite = nil
@@ -43,12 +44,17 @@ local locationsTable = {"Route 1", "Route 2", "Route 3", "Route 4", "Route 5",
 "New Bark Town", "Cherrygrove City", "Violet City", "Azalea Town", "Goldenrod City", 
 "Ecruteak City", "Olivine City", "Cianwood City", "Mahogany City", "Blackthorn City", 
 "Ruins of Alph", "Union Cave", "Ilex Forest", "National Park", "Whirl Islands",
-"Mt. Mortar", "Lake of Rage", "Dragon's Den", "Dark Cave", "Silver Cave", }
+"Mt. Mortar", "Lake of Rage", "Dragon's Den", "Dark Cave", "Silver Cave", 
+--
+"Wild Battle",}
+
+locationsTable[0] = "Unknown Area"
 tile = {}
 for i=1,127 do
     tile[i] = love.graphics.newImage( "tiles/resize/Tile"..(i-1)..".png" )
 end
 
+local playingMusic = love.audio.newSource("sound/music/"..locationsTable[66]..".mp3")
 local pokemonTeam = {}
 local map_w = 470
 local map_h = 270
@@ -222,7 +228,7 @@ function love.update(dt)
         newGameText:SetText("Let's go! I'll be seeing you later!")
     elseif newGameTextProgress == 12 then
         pokemonTeam = {1,1,1,1,1,1}
-        Location = 70
+        Location = 66
         map_x = 359
         map_y = 218
         loveframes.SetState("playing")
@@ -234,6 +240,69 @@ function love.update(dt)
         newGameTextProgress = 13
     end
     
+    if 351 <= player_x and player_x <= 369 then
+        if 217 <= player_y and player_y <= 234 then
+            if Location ~= 66 then
+                Location = 66
+                displayTextBox({locationsTable[Location]}, "playing")
+                playingMusic:stop()
+            end
+        end
+    elseif 292 <= player_x and player_x <= 350 then
+        if 217 <= player_y and player_y <= 234 then
+            if Location ~= 29 then
+                Location = 29
+                displayTextBox({locationsTable[Location]}, "playing")
+                playingMusic:stop()
+            end
+        end
+    elseif 252 <= player_x and player_x <= 291 then
+        if 217 <= player_y and player_y <= 234 then
+            if Location ~= 67 then
+                Location = 67
+                displayTextBox({locationsTable[Location]}, "playing")
+                playingMusic:stop()
+            end
+        elseif 262 <= player_x and player_x <= 281 then
+            if 163 <= player_y and player_y <= 216 then
+                if Location ~= 30 then
+                    Location = 30
+                    displayTextBox({locationsTable[Location]}, "playing")
+                    playingMusic:stop()
+                end
+            
+            end
+        elseif 245 <= player_x and player_x <= 261 then
+            if 144 <= player_y and player_y <= 162 then
+                if Location ~= 31 then
+                    Location = 31
+                    displayTextBox({locationsTable[Location]}, "playing")
+                    playingMusic:stop()
+                end
+            end
+        end
+    elseif 202 <= player_x and player_x <= 241 then
+        if 127 <= player_y and player_y <= 162 then
+            if Location ~= 68 then
+                Location = 68
+                displayTextBox({locationsTable[Location]}, "playing")
+                playingMusic:stop()
+            end
+        end
+    else
+        if Location ~= 0 then
+            Location = 0
+            displayTextBox({locationsTable[Location]}, "playing")
+            playingMusic:stop()
+        end
+    end
+    
+    if loveframes.GetState() == "playing" and Location ~= nil then
+        if playingMusic:isPlaying() == false then
+            playingMusic = love.audio.newSource("sound/music/"..locationsTable[Location]..".mp3")
+            playingMusic:play()
+        end
+    end
 end
 
 function love.draw()
@@ -923,7 +992,14 @@ function saveGame()
         badgeData = badgeData..playerBadges[I]..'\n'
     end
     
-    love.filesystem.write('gameSave.txt', playerName..'\n'..genderStatus..'\n'..map_x..'\n'..map_y..'\n'..surfStatus..'\n'..Location..'\n'..badgeData--[[..nextThing]]) 
+    local bikeStatus = ""
+    if isPlayerBiking == true then
+        bikeStatus = "true"
+    else
+        bikeStatus = "false"
+    end
+    
+    love.filesystem.write('gameSave.txt', playerName..'\n'..genderStatus..'\n'..map_x..'\n'..map_y..'\n'..surfStatus..'\n'..Location..'\n'..badgeData..bikeStatus) 
 end
 
 function loadGame()
@@ -949,6 +1025,11 @@ function loadGame()
         Location = loadFile[6]
         for I = 1,43 do
             playerBadges[I] = loadFile[(6+I)]
+        end
+        if loadFile[50] == "true" then
+            isPlayerBiking = true
+        else
+            isPlayerBiking = false
         end
         
         loveframes.SetState("playing")
