@@ -17,7 +17,7 @@ local showingPlayerCard = false
 local isPlayerSurfing = false
 local pleyerFacing = ""
 local showingText = false
-local Location = 0
+local Location = nil
 local playerBadges = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,}
 local buttonUP = 'up'
 local buttonDOWN = 'down'
@@ -46,7 +46,7 @@ local locationsTable = {"Route 1", "Route 2", "Route 3", "Route 4", "Route 5",
 "Ruins of Alph", "Union Cave", "Ilex Forest", "National Park", "Whirl Islands",
 "Mt. Mortar", "Lake of Rage", "Dragon's Den", "Dark Cave", "Silver Cave", 
 --
-"Wild Battle",}
+"Wild Battle", "Wild Battle Kanto"}
 
 locationsTable[0] = "Unknown Area"
 tile = {}
@@ -170,6 +170,9 @@ function love.update(dt)
         newGameText:SetText("Hello! Sorry to keep you waiting! Welcome to the world of Pokémon!")
     elseif newGameTextProgress == 1 then
         newGameText:SetText("My name is Professor Acacia. Everyone calls me the Pokémon Professor!")
+        Location = 66
+        map_x = 359
+        map_y = 218
     elseif newGameTextProgress == 2 then
         newGameText:SetText("This world is inhabitied by creatures that we call Pokémon.")
     elseif newGameTextProgress == 3 then
@@ -227,19 +230,27 @@ function love.update(dt)
     elseif newGameTextProgress == 11 then
         newGameText:SetText("Let's go! I'll be seeing you later!")
     elseif newGameTextProgress == 12 then
-        pokemonTeam = {1,1,1,1,1,1}
-        Location = 66
-        map_x = 359
-        map_y = 218
-        loveframes.SetState("playing")
+        pokemonTeam = {{},{},{},{},{},{}}
+        
+        
         if isPlayerBoy == true then
             --playersprite = love.graphics.newImage( "sprites/PlayerM1.png" )
         else
             playersprite = love.graphics.newImage( "sprites/PlayerF1.png" )
         end
         newGameTextProgress = 13
+        loveframes.SetState("playing")
     end
     
+    --Music
+    
+    if loveframes.GetState() == "playing" then
+    if isPlayerSurfing == true then
+        playingMusic = love.audio.newSource("sound/music/Surfing.mp3")
+    elseif isPlayerBiking == true then
+        playingMusic = love.audio.newSource("sound/music/Biking.mp3")
+    else
+
     if 351 <= player_x and player_x <= 369 then
         if 217 <= player_y and player_y <= 234 then
             if Location ~= 66 then
@@ -297,9 +308,15 @@ function love.update(dt)
         end
     end
     
-    if loveframes.GetState() == "playing" and Location ~= nil then
+    end -- End if surfing/biking
+    end --End If state
+    
+    if (loveframes.GetState() == "playing" or loveframes.GetState() == "battle") and Location ~= nil then
         if playingMusic:isPlaying() == false then
-            playingMusic = love.audio.newSource("sound/music/"..locationsTable[Location]..".mp3")
+            if isPlayerSurfing == true or isPlayerBiking == true then
+            else
+                playingMusic = love.audio.newSource("sound/music/"..locationsTable[Location]..".mp3")
+            end
             playingMusic:play()
         end
     end
@@ -900,6 +917,8 @@ function tryEvent(fromX,fromY)
 
     if movementData[fromY][fromX] == 3 then
         print("Surfable Tile")
+        --Ask surfing yes/no
+        playingMusic:stop()
     elseif movementData[fromY][fromX] == 7 then
         print("Cutable Tile")
     elseif fromX == 362 and fromY == 222 then
@@ -1063,6 +1082,35 @@ end
 
 function doEncounter(enemyTeam)
     loveframes.SetState("battle")
+    if Location < 29 then
+        Location = 87
+    elseif Location < 47 then
+        Location = 86
+    elseif Location < 66 then
+        Location = 87
+    else
+        Location = 86
+    end
+    
+    playingMusic:stop()
+    
+    currentPokemon = 0
+    if pokemonTeam[1][4] > 0 then
+        currentPokemon = 1
+    elseif pokemonTeam[2][4] > 0 then
+        currentPokemon = 2
+    elseif pokemonTeam[3][4] > 0 then
+        currentPokemon = 3
+    elseif pokemonTeam[4][4] > 0 then
+        currentPokemon = 4
+    elseif pokemonTeam[5][4] > 0 then
+        currentPokemon = 5
+    else
+        currentPokemon = 6
+    end
+    
+    currentEnemy = 1
+    
     local frameBattle = loveframes.Create("frame")
     frameBattle:SetName("")
     frameBattle:SetPos(0,0)
@@ -1089,7 +1137,7 @@ function doEncounter(enemyTeam)
     frameBattleText:SetResizable(false)
     frameBattleText:SetDraggable(false)
     
-    ----
+    ----TODO:Actual Text
     
     frameBattleSelection = loveframes.Create("frame", frameBattleText)
     frameBattleSelection:SetName("")
@@ -1138,7 +1186,11 @@ function doEncounter(enemyTeam)
         selectedOption = 3
     end
     buttonRun.OnClick = function(object)
-        print("buttonRun")
+        if (canEscape(pokemonTeam[currentPokemon][3], enemyTeam[currentEnemy][3])) == true then
+            loveframes.SetState("playing")
+        else
+            --Cant escape text
+        end
     end
     
     imageBattleSelArrow = loveframes.Create("image", frameBattleSelection)
@@ -1146,4 +1198,9 @@ function doEncounter(enemyTeam)
     imageBattleSelArrow:SetPos(15,55) --Fight: (15,55), Pack: (15,115), PkMn: (215,55), Run: (215,115)
     
     
+end
+
+function canEscape(playerLevel, enemyLevel)
+    return true
+    --TODO
 end
