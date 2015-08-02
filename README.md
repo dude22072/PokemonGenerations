@@ -1,5 +1,6 @@
 # PokemonGenerations
-A project to combine the first four regions (including Sevii Isles and the Orange Archipelago) of pokémon into one game.
+A project to combine the first four regions (including Sevii Isles and the Orange Archipelago) of pokémon into one game.  
+Made in Love2D using loveframes
 ### Progress
 Feature | Status | Note
 --- | --- | ---
@@ -12,4 +13,6 @@ Sound Effects | *Planned* | Need MP3s
 Evolution | *Planned* | Need to get battles working first
 Eggs | *Planned* | Need more work on other things
 Bag | *Planned* | need to figure this out soon-ish
+Pokédex | *Planned* | Gonna take some creativity.
+Pokémon | **_In Progress_** | **Done:** Names. **TODO:** Movesets, Types, Evolutions, Sprites.
 Day/Night Cycle | Unknown | May not be able to implement.
