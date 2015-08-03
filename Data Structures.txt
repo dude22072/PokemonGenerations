@@ -1,4 +1,5 @@
 pokemon = {pokemon, nickname, Level, HP, MAX HP, EXP, 
+Attack, Defense, Speed, SpAttack, SpDefense
 Status Condition, HeldItem, PKRS, Ability,
 Move1, Move1PP, Move1PPUP, 
 Move2, Move2PP, Move2PPUP, 

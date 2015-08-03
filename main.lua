@@ -1,6 +1,8 @@
 ﻿require("lib.loveframes")
 require('data')
 
+math.randomseed(os.time())
+
 local newGameText = nil
 local newGameTextProgress = 0
 local currentTextPossition = 0
@@ -27,6 +29,7 @@ local buttonA = 'z'
 local buttonB = 'x'
 local buttonSTART = 'return'
 local selectedOption = 0
+battleEscapeAttempts = 0
 
 local locationsTable = {"Route 1", "Route 2", "Route 3", "Route 4", "Route 5",
 "Route 6", "Route 7", "Route 8", "Route 9", "Route 10",
@@ -55,7 +58,13 @@ for i=1,127 do
 end
 
 local playingMusic = love.audio.newSource("sound/music/"..locationsTable[66]..".mp3")
-local pokemonTeam = {}
+local pokemonTeam = {{0},{0},{0},{0},{0},{0}}
+for I = 1,6 do
+    for J = 1,52 do
+        if J ~= 2 then pokemonTeam[I][J] = 0 else pokemonTeam[I][J] = "" end
+    end
+    pokemonTeam[I][1] = 10000000000
+end
 local map_w = 470
 local map_h = 270
 local map_x = 0
@@ -165,6 +174,13 @@ function love.update(dt)
     loveframes.update(dt)
     player_y = map_y + 5
     player_x = map_x + 5
+    
+    if loveframes.GetState() ~= "battle" then
+        if battleEscapeAttempts ~= 0 then
+            battleEscapeAttempts = 0
+        end
+    end
+    
     --State NewGame
     if newGameTextProgress == 0 then
         newGameText:SetText("Hello! Sorry to keep you waiting! Welcome to the world of Pokémon!")
@@ -230,9 +246,6 @@ function love.update(dt)
     elseif newGameTextProgress == 11 then
         newGameText:SetText("Let's go! I'll be seeing you later!")
     elseif newGameTextProgress == 12 then
-        pokemonTeam = {{},{},{},{},{},{}}
-        
-        
         if isPlayerBoy == true then
             --playersprite = love.graphics.newImage( "sprites/PlayerM1.png" )
         else
@@ -648,6 +661,7 @@ function showStartMenu()
         buttonTestEncounter:SetPos(10, 70):SetText("Test Encounter")
         buttonTestEncounter.OnClick = function(object)
             pokemonTeam[1] = {1, "bulba", 5, 10, 20, 0, 
+            5, 5, 5, 5, 5,
             0, 0, 0, 0,
             1, 35, 0,
             0, 0, 0,
@@ -661,7 +675,7 @@ function showStartMenu()
             }
             
             doEncounter({
-            {25, "Pikachu", 5, 20, 20, 0, 0, 0, 0, 0, 2, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, 0, nil, nil, nil, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0,0,0,0}},
+            {25, "Pikachu", 5, 20, 20, 0, 3, 3, 3, 3, 3, 0, 0, 0, 0, 2, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, 0, nil, nil, nil, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0,0,0,0}},
             {},
             {},
             {},
@@ -1018,7 +1032,29 @@ function saveGame()
         bikeStatus = "false"
     end
     
-    love.filesystem.write('gameSave.txt', playerName..'\n'..genderStatus..'\n'..map_x..'\n'..map_y..'\n'..surfStatus..'\n'..Location..'\n'..badgeData..bikeStatus) 
+    local pokemonTeamOutput = ""
+    for I = 1,6 do
+        if pokemonTeam[I] == nil then
+            for J = 1, 52 do
+                if J ~= 2 then
+                    pokemonTeamOutput = pokemonTeamOutput.."0".."\n"
+                else
+                    pokemonTeamOutput = pokemonTeamOutput.."".."\n"
+                end
+            end
+        else
+            for J = 1, 52 do
+                print("I: "..I..", J: "..J)
+                if J == 52 then
+                    pokemonTeamOutput = pokemonTeamOutput.."nil".."\n"
+                else
+                    pokemonTeamOutput = pokemonTeamOutput..pokemonTeam[I][J].."\n"
+                end
+            end
+        end
+    end
+    
+    love.filesystem.write('gameSave.txt', playerName..'\n'..genderStatus..'\n'..map_x..'\n'..map_y..'\n'..surfStatus..'\n'..Location..'\n'..badgeData..bikeStatus.."\n"..pokemonTeamOutput--[[..nextThing]]) 
 end
 
 function loadGame()
@@ -1049,6 +1085,12 @@ function loadGame()
             isPlayerBiking = true
         else
             isPlayerBiking = false
+        end
+        
+        for I = 1,6 do
+            for J = 1,52 do
+                pokemonTeam[I][J] = loadFile[((50+(J))+((I-1)*52))]
+            end
         end
         
         loveframes.SetState("playing")
@@ -1186,7 +1228,7 @@ function doEncounter(enemyTeam)
         selectedOption = 3
     end
     buttonRun.OnClick = function(object)
-        if (canEscape(pokemonTeam[currentPokemon][3], enemyTeam[currentEnemy][3])) == true then
+        if (canEscape(pokemonTeam[currentPokemon][9], enemyTeam[currentEnemy][9])) == true then
             loveframes.SetState("playing")
         else
             --Cant escape text
@@ -1200,7 +1242,13 @@ function doEncounter(enemyTeam)
     
 end
 
-function canEscape(playerLevel, enemyLevel)
-    return true
-    --TODO
+function canEscape(playerSpeed, enemySpeed)
+    local A = playerSpeed
+    local B = enemySpeed
+    battleEscapeAttempts = battleEscapeAttempts + 1
+    local C = battleEscapeAttempts
+    if B < 1 then B = 1 end
+    local F = (((((A*128)/B)+30)*C) % (256))
+    local R = math.random(0, 255)
+    if R < F then return true else return false end
 end
