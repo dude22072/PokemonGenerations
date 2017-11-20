@@ -53,8 +53,8 @@ local locationsTable = {"Route 1", "Route 2", "Route 3", "Route 4", "Route 5",
 
 locationsTable[0] = "Unknown Area"
 tile = {}
-for i=1,127 do
-    tile[i] = love.graphics.newImage( "tiles/resize/Tile"..(i-1)..".png" )
+for i=0,173 do
+    tile[i] = love.graphics.newImage( "tiles/resize/Tile"..(i)..".png" )
 end
 
 local playingMusic = love.audio.newSource("sound/music/"..locationsTable[66]..".mp3")
@@ -364,17 +364,17 @@ function love.keypressed(key, unicode)
             
             pleyerFacing = "up"
             
-            if movementData[player_y-1][player_x] == 2 then
+            if movementData[player_y-1][player_x] == 1 then
                 map_y = map_y-1
                 if map_y < 0 then map_y = 0; end
-            elseif movementData[player_y-1][player_x] == 3 and isPlayerSurfing == true then
+            elseif movementData[player_y-1][player_x] == 2 and isPlayerSurfing == true then
                 map_y = map_y-1
                 if map_y < 0 then map_y = 0; end
-            elseif movementData[player_y-1][player_x] == 8 then
+            elseif movementData[player_y-1][player_x] == 7 then
                 map_y = map_y-1
                 if map_y < 0 then map_y = 0; end
                 doShouldEncounter()
-            elseif movementData[player_y-1][player_x] == 9 then
+            elseif movementData[player_y-1][player_x] == 8 then
                 tryWarp(player_x,player_y-1)
             end
         end
@@ -387,20 +387,20 @@ function love.keypressed(key, unicode)
             
             pleyerFacing = "down"
         
-            if movementData[player_y+1][player_x] == 2 then
+            if movementData[player_y+1][player_x] == 1 then
                 map_y = map_y+1
                 if map_y > map_h-map_display_h then map_y = map_h-map_display_h; end
-            elseif movementData[player_y+1][player_x] == 3 and isPlayerSurfing == true then
+            elseif movementData[player_y+1][player_x] == 2 and isPlayerSurfing == true then
                 map_y = map_y+1
                 if map_y > map_h-map_display_h then map_y = map_h-map_display_h; end
-            elseif movementData[player_y+1][player_x] == 5 then
+            elseif movementData[player_y+1][player_x] == 4 then
                 map_y = map_y+2
                 if map_y > map_h-map_display_h then map_y = map_h-map_display_h; end
-            elseif movementData[player_y+1][player_x] == 8 then
+            elseif movementData[player_y+1][player_x] == 7 then
                 map_y = map_y+1
                 if map_y > map_h-map_display_h then map_y = map_h-map_display_h; end
                 doShouldEncounter()
-            elseif movementData[player_y+1][player_x] == 9 then
+            elseif movementData[player_y+1][player_x] == 8 then
                 tryWarp(player_x,player_y+1)
             end
         end
@@ -413,16 +413,16 @@ function love.keypressed(key, unicode)
             
             pleyerFacing = "left"
             
-            if movementData[player_y][player_x-1] == 2 then
+            if movementData[player_y][player_x-1] == 1 then
                 map_x = math.max(map_x-1, 0)
-            elseif movementData[player_y][player_x-1] == 3 and isPlayerSurfing == true then
+            elseif movementData[player_y][player_x-1] == 2 and isPlayerSurfing == true then
                 map_x = math.max(map_x-1, 0)
-            elseif movementData[player_y][player_x-1] == 4 then
+            elseif movementData[player_y][player_x-1] == 3 then
                 map_x = math.max(map_x-2, 0)
-            elseif movementData[player_y][player_x-1] == 8 then
+            elseif movementData[player_y][player_x-1] == 7 then
                 map_x = math.max(map_x-1, 0)
                 doShouldEncounter()
-            elseif movementData[player_y][player_x-1] == 9 then
+            elseif movementData[player_y][player_x-1] == 8 then
                 tryWarp(player_x-1,player_y)
             end
         end
@@ -435,16 +435,16 @@ function love.keypressed(key, unicode)
             
             pleyerFacing = "right"
             
-            if movementData[player_y][player_x+1] == 2 then
+            if movementData[player_y][player_x+1] == 1 then
                 map_x = math.min(map_x+1, map_w-map_display_w)
-            elseif movementData[player_y][player_x+1] == 3 and isPlayerSurfing == true then
+            elseif movementData[player_y][player_x+1] == 2 and isPlayerSurfing == true then
                 map_x = math.min(map_x+1, map_w-map_display_w)
-            elseif movementData[player_y][player_x+1] == 6 then
+            elseif movementData[player_y][player_x+1] == 5 then
                 map_x = math.min(map_x+2, map_w-map_display_w)
-            elseif movementData[player_y][player_x+1] == 8 then
+            elseif movementData[player_y][player_x+1] == 7 then
                 map_x = math.min(map_x+1, map_w-map_display_w)
                 doShouldEncounter()
-            elseif movementData[player_y][player_x+1] == 9 then
+            elseif movementData[player_y][player_x+1] == 8 then
                 tryWarp(player_x+1,player_y)
             end
         end
@@ -650,8 +650,8 @@ function showStartMenu()
         buttonWalkEverywhere.OnClick = function(object)
             for Y=1,map_h do
                 for X=1,map_w do
-                    if movementData[Y][X] ~= 9 then
-                        movementData[Y][X] = 2
+                    if movementData[Y][X] ~= 8 then
+                        movementData[Y][X] = 1
                     end
                 end
             end
@@ -929,11 +929,11 @@ end
 
 function tryEvent(fromX,fromY)
 
-    if movementData[fromY][fromX] == 3 then
+    if movementData[fromY][fromX] == 2 then
         print("Surfable Tile")
         --Ask surfing yes/no
         playingMusic:stop()
-    elseif movementData[fromY][fromX] == 7 then
+    elseif movementData[fromY][fromX] == 6 then
         print("Cutable Tile")
     elseif fromX == 362 and fromY == 222 then
         displayTextBox({playerName.."'s House"}, "playing")
