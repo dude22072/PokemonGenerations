@@ -1,3 +1,6 @@
-[submodule "torchlib"]
-	path = torchlib
-	url = https://github.com/vzhong/torchlib
+[submodule "lua-multikey"]
+	path = lua-multikey
+	url = https://github.com/siffiejoe/lua-multikey
+[submodule "binser"]
+	path = binser
+	url = https://github.com/bakpakin/binser

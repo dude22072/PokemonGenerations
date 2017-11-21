@@ -1,7 +1,9 @@
 ﻿require("lib.loveframes")
 require('data')
-
 math.randomseed(os.time())
+
+local mk = require( "lua-multikey.src.multikey" )
+local get, put = mk.get, mk.put
 
 local newGameText = nil
 local newGameTextProgress = 0
@@ -21,6 +23,7 @@ local pleyerFacing = ""
 local showingText = false
 local Location = nil
 local playerBadges = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,}
+local playerBag = {}
 local buttonUP = 'up'
 local buttonDOWN = 'down'
 local buttonLEFT = 'left'
@@ -53,7 +56,7 @@ local locationsTable = {"Route 1", "Route 2", "Route 3", "Route 4", "Route 5",
 
 locationsTable[0] = "Unknown Area"
 tile = {}
-for i=0,173 do
+for i=0,199 do
     tile[i] = love.graphics.newImage( "tiles/resize/Tile"..(i)..".png" )
 end
 
