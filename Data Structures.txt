@@ -28,3 +28,5 @@ Stone, Knuckle, Dynamo, Heat, Balance, Feather, Mind, Rain,
 Coal, Forest, Cobble, Fan, Relic, Mine, Icicle, Beacon, 
 Knowledge, Guts, Tactics, Luck, Spirits, Ability, Brave,
 Coral-Eye, Sea Ruby, Spike Shell, Jade Star,}
+
+playerBag={ {item, ammount}, ... }

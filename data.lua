@@ -682,5 +682,5 @@ itemTable = {
     {"Poké Ball",       nil,    0,      nil,    "An item for catching Pokémon.",                                pockets.ballPocket,    4,      nil,    1},
     {"Safari Ball",     nil,    0,      nil,    "A special Ball that is used only in the Safari Zone.",         pockets.ballPocket,    4,      nil,    1},
     
-}
+}; itemTable[0] = {"Poké Dollar", nil, nil, nil, "", nil, nil, nil, nil};
 --
