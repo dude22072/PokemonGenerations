@@ -1,9 +1,12 @@
 ﻿require("lib.loveframes")
+require("lib.TEsound")
 require('data')
 math.randomseed(os.time())
 
 local mk = require( "lua-multikey.src.multikey" )
 local get, put = mk.get, mk.put
+local binser = require("binser.binser")
+local serialize, deserialize = binser.serialize, binser.deserialize
 
 local newGameText = nil
 local newGameTextProgress = 0
@@ -60,7 +63,7 @@ for i=0,199 do
     tile[i] = love.graphics.newImage( "tiles/resize/Tile"..(i)..".png" )
 end
 
-local playingMusic = love.audio.newSource("sound/music/"..locationsTable[66]..".mp3")
+--local playingMusic = love.audio.newSource("sound/music/"..locationsTable[66]..".mp3")
 local pokemonTeam = {{0},{0},{0},{0},{0},{0}}
 for I = 1,6 do
     for J = 1,52 do
@@ -174,6 +177,7 @@ function love.load(arg)
 end
 
 function love.update(dt)
+    TEsound.cleanup()
     loveframes.update(dt)
     player_y = map_y + 5
     player_x = map_x + 5
@@ -248,6 +252,7 @@ function love.update(dt)
         newGameText:SetText("You'll face fun times and tough challenges. A world of dreams and adventures with Pokémon awaits!")
     elseif newGameTextProgress == 11 then
         newGameText:SetText("Let's go! I'll be seeing you later!")
+        
     elseif newGameTextProgress == 12 then
         if isPlayerBoy == true then
             --playersprite = love.graphics.newImage( "sprites/PlayerM1.png" )
@@ -261,79 +266,72 @@ function love.update(dt)
     --Music
     
     if loveframes.GetState() == "playing" then
-    if isPlayerSurfing == true then
-        playingMusic = love.audio.newSource("sound/music/Surfing.mp3")
-    elseif isPlayerBiking == true then
-        playingMusic = love.audio.newSource("sound/music/Biking.mp3")
-    else
-
-    if 351 <= player_x and player_x <= 369 then
-        if 217 <= player_y and player_y <= 234 then
-            if Location ~= 66 then
-                Location = 66
-                displayTextBox({locationsTable[Location]}, "playing")
-                playingMusic:stop()
-            end
-        end
-    elseif 292 <= player_x and player_x <= 350 then
-        if 217 <= player_y and player_y <= 234 then
-            if Location ~= 29 then
-                Location = 29
-                displayTextBox({locationsTable[Location]}, "playing")
-                playingMusic:stop()
-            end
-        end
-    elseif 252 <= player_x and player_x <= 291 then
-        if 217 <= player_y and player_y <= 234 then
-            if Location ~= 67 then
-                Location = 67
-                displayTextBox({locationsTable[Location]}, "playing")
-                playingMusic:stop()
-            end
-        elseif 262 <= player_x and player_x <= 281 then
-            if 163 <= player_y and player_y <= 216 then
-                if Location ~= 30 then
-                    Location = 30
+        if 351 <= player_x and player_x <= 369 then
+            if 217 <= player_y and player_y <= 234 then
+                if Location ~= 66 then
+                    Location = 66
                     displayTextBox({locationsTable[Location]}, "playing")
-                    playingMusic:stop()
-                end
-            
-            end
-        elseif 245 <= player_x and player_x <= 261 then
-            if 144 <= player_y and player_y <= 162 then
-                if Location ~= 31 then
-                    Location = 31
-                    displayTextBox({locationsTable[Location]}, "playing")
-                    playingMusic:stop()
+                    TEsound.stop("music")
                 end
             end
-        end
-    elseif 202 <= player_x and player_x <= 241 then
-        if 127 <= player_y and player_y <= 162 then
-            if Location ~= 68 then
-                Location = 68
+        elseif 292 <= player_x and player_x <= 350 then
+            if 217 <= player_y and player_y <= 234 then
+                if Location ~= 29 then
+                    Location = 29
+                    displayTextBox({locationsTable[Location]}, "playing")
+                    TEsound.stop("music")
+                end
+            end
+        elseif 252 <= player_x and player_x <= 291 then
+            if 217 <= player_y and player_y <= 234 then
+                if Location ~= 67 then
+                    Location = 67
+                    displayTextBox({locationsTable[Location]}, "playing")
+                    TEsound.stop("music")
+                end
+            elseif 262 <= player_x and player_x <= 281 then
+                if 163 <= player_y and player_y <= 216 then
+                    if Location ~= 30 then
+                        Location = 30
+                        displayTextBox({locationsTable[Location]}, "playing")
+                        TEsound.stop("music")
+                    end
+                end
+            elseif 245 <= player_x and player_x <= 261 then
+                if 144 <= player_y and player_y <= 162 then
+                    if Location ~= 31 then
+                        Location = 31
+                        displayTextBox({locationsTable[Location]}, "playing")
+                        TEsound.stop("music")
+                    end
+                end
+            end
+        elseif 202 <= player_x and player_x <= 241 then
+            if 127 <= player_y and player_y <= 162 then
+                if Location ~= 68 then
+                    Location = 68
+                    displayTextBox({locationsTable[Location]}, "playing")
+                    TEsound.stop("music")
+                end
+            end
+        else
+            if Location ~= 0 then
+                Location = 0
                 displayTextBox({locationsTable[Location]}, "playing")
-                playingMusic:stop()
+                TEsound.stop("music")
             end
         end
-    else
-        if Location ~= 0 then
-            Location = 0
-            displayTextBox({locationsTable[Location]}, "playing")
-            playingMusic:stop()
-        end
-    end
-    
-    end -- End if surfing/biking
     end --End If state
     
     if (loveframes.GetState() == "playing" or loveframes.GetState() == "battle") and Location ~= nil then
-        if playingMusic:isPlaying() == false then
-            if isPlayerSurfing == true or isPlayerBiking == true then
+        if TEsound.findTag("music")[1] == nil then
+            if isPlayerSurfing == true then
+                TEsound.playLooping("sound/music/Surfing.mp3", "music")
+            elseif isPlayerBiking == true then
+                TEsound.playLooping("sound/music/Biking.mp3", "music")
             else
-                playingMusic = love.audio.newSource("sound/music/"..locationsTable[Location]..".mp3")
+                TEsound.playLooping("sound/music/"..locationsTable[Location]..".mp3", "music")
             end
-            playingMusic:play()
         end
     end
 end
@@ -367,19 +365,7 @@ function love.keypressed(key, unicode)
             
             pleyerFacing = "up"
             
-            if movementData[player_y-1][player_x] == 1 then
-                map_y = map_y-1
-                if map_y < 0 then map_y = 0; end
-            elseif movementData[player_y-1][player_x] == 2 and isPlayerSurfing == true then
-                map_y = map_y-1
-                if map_y < 0 then map_y = 0; end
-            elseif movementData[player_y-1][player_x] == 7 then
-                map_y = map_y-1
-                if map_y < 0 then map_y = 0; end
-                doShouldEncounter()
-            elseif movementData[player_y-1][player_x] == 8 then
-                tryWarp(player_x,player_y-1)
-            end
+            tryMovement(0, -1)
         end
         if key == buttonDOWN then
             if isPlayerBoy == true then
@@ -389,23 +375,8 @@ function love.keypressed(key, unicode)
             end
             
             pleyerFacing = "down"
-        
-            if movementData[player_y+1][player_x] == 1 then
-                map_y = map_y+1
-                if map_y > map_h-map_display_h then map_y = map_h-map_display_h; end
-            elseif movementData[player_y+1][player_x] == 2 and isPlayerSurfing == true then
-                map_y = map_y+1
-                if map_y > map_h-map_display_h then map_y = map_h-map_display_h; end
-            elseif movementData[player_y+1][player_x] == 4 then
-                map_y = map_y+2
-                if map_y > map_h-map_display_h then map_y = map_h-map_display_h; end
-            elseif movementData[player_y+1][player_x] == 7 then
-                map_y = map_y+1
-                if map_y > map_h-map_display_h then map_y = map_h-map_display_h; end
-                doShouldEncounter()
-            elseif movementData[player_y+1][player_x] == 8 then
-                tryWarp(player_x,player_y+1)
-            end
+            
+            tryMovement(0, 1)
         end
         if key == buttonLEFT then
             if isPlayerBoy == true then
@@ -416,18 +387,7 @@ function love.keypressed(key, unicode)
             
             pleyerFacing = "left"
             
-            if movementData[player_y][player_x-1] == 1 then
-                map_x = math.max(map_x-1, 0)
-            elseif movementData[player_y][player_x-1] == 2 and isPlayerSurfing == true then
-                map_x = math.max(map_x-1, 0)
-            elseif movementData[player_y][player_x-1] == 3 then
-                map_x = math.max(map_x-2, 0)
-            elseif movementData[player_y][player_x-1] == 7 then
-                map_x = math.max(map_x-1, 0)
-                doShouldEncounter()
-            elseif movementData[player_y][player_x-1] == 8 then
-                tryWarp(player_x-1,player_y)
-            end
+            tryMovement(-1,0)
         end
         if key == buttonRIGHT then
             if isPlayerBoy == true then
@@ -438,18 +398,7 @@ function love.keypressed(key, unicode)
             
             pleyerFacing = "right"
             
-            if movementData[player_y][player_x+1] == 1 then
-                map_x = math.min(map_x+1, map_w-map_display_w)
-            elseif movementData[player_y][player_x+1] == 2 and isPlayerSurfing == true then
-                map_x = math.min(map_x+1, map_w-map_display_w)
-            elseif movementData[player_y][player_x+1] == 5 then
-                map_x = math.min(map_x+2, map_w-map_display_w)
-            elseif movementData[player_y][player_x+1] == 7 then
-                map_x = math.min(map_x+1, map_w-map_display_w)
-                doShouldEncounter()
-            elseif movementData[player_y][player_x+1] == 8 then
-                tryWarp(player_x+1,player_y)
-            end
+            tryMovement(1,0)
         end
         
         if key == buttonA then
@@ -864,7 +813,7 @@ function showPlayerCard(menuFrame)
     
 end
 
-function doShouldEncounter()
+function doShouldEncounter(surfing)
     --
 end
 
@@ -935,7 +884,7 @@ function tryEvent(fromX,fromY)
     if movementData[fromY][fromX] == 2 then
         print("Surfable Tile")
         --Ask surfing yes/no
-        playingMusic:stop()
+        TEsound.stop("music")
     elseif movementData[fromY][fromX] == 6 then
         print("Cutable Tile")
     elseif fromX == 362 and fromY == 222 then
@@ -1137,7 +1086,7 @@ function doEncounter(enemyTeam)
         Location = 86
     end
     
-    playingMusic:stop()
+    TEsound.stop("music")
     
     currentPokemon = 0
     if pokemonTeam[1][4] > 0 then
@@ -1254,4 +1203,22 @@ function canEscape(playerSpeed, enemySpeed)
     local F = (((((A*128)/B)+30)*C) % (256))
     local R = math.random(0, 255)
     if R < F then return true else return false end
+end
+
+function tryMovement(xMove, yMove)
+    if movementData[player_y+yMove][player_x+xMove] == 1 or (movementData[player_y+yMove][player_x+xMove] == 2 and isPlayerSurfing == true) or movementData[player_y+yMove][player_x+xMove] == 7 then
+        map_y = map_y+yMove
+        map_x = map_x+xMove
+        if map_y < 0 then map_y = 0; end
+        if map_y > map_h-map_display_h then map_y = map_h-map_display_h; end
+        if map_x < 0 then map_x = 0; end
+        if map_x > map_w-map_display_w then map_x = map_w-map_display_w; end
+    end
+    if movementData[player_y+yMove][player_x+xMove] == 2 and isPlayerSurfing == true then
+        doShouldEncounter(true)
+    elseif movementData[player_y+yMove][player_x+xMove] == 7 then
+        doShouldEncounter(false)
+    elseif movementData[player_y+yMove][player_x+xMove] == 8 then
+        tryWarp(player_x,player_y-1)
+    end
 end
